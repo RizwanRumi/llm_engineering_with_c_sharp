@@ -54,37 +54,8 @@ The original course is built around Python and the OpenAI API. This repo exists 
 
 | Week | Exercise | Description | Status |
 |---|---|---|---|
-| Week 1, Day 1 | Email Subject Line Generator | Given an email body, suggests a short, professional subject line. Implemented for OpenAI and Claude using the **Strategy pattern**, letting the user pick a provider at runtime. | ✅ |
-| Week 1, Day 2 | Meeting Notes Summarizer + Ollama provider | Reuses the Day 1 classes/interfaces (renamed to the generic `TextGen*`/`*TextGenerationStrategy`) to turn raw, informal meeting notes into a structured markdown summary (Key Decisions / Action Items / Open Questions), and adds **Ollama** as a third interchangeable provider alongside OpenAI and Claude. `Program.cs` currently runs this version. | ✅ |
-
-## Project structure
-
-```
-LLMConsoleApp/
-└── Week1/
-    └── Day1/
-        ├── TextGenOpenAI.cs            # single-provider reference version (OpenAI)
-        ├── TextGenClaude.cs            # single-provider reference version (Claude)
-        ├── TextGenOllama.cs            # single-provider reference version (Ollama)
-        └── StrategyPattern/
-            ├── ITextGenerationStrategy.cs
-            ├── OpenAiTextGenerationStrategy.cs
-            ├── ClaudeTextGenerationStrategy.cs
-            ├── OllamaTextGenerationStrategy.cs
-            └── TextGenerator.cs
-Program.cs
-```
-
-## Design notes
-
-- **Strategy pattern** is used to abstract away provider-specific API differences (OpenAI's `ChatClient`, Anthropic's `AnthropicClient`, and Ollama via its OpenAI-compatible endpoint) behind a common interface, so calling code stays provider-agnostic and new providers can be added without touching existing code.
-- Each exercise typically has:
-  - An interface (e.g. `ITextGenerationStrategy`)
-  - One concrete strategy class per provider (e.g. `OpenAiTextGenerationStrategy`, `ClaudeTextGenerationStrategy`, `OllamaTextGenerationStrategy`)
-  - A small context class that wraps the chosen strategy
-- **Ollama** is added as a provider by pointing the `OpenAI` SDK's `ChatClient` at Ollama's local, OpenAI-compatible endpoint (`http://localhost:11434/v1`) instead of OpenAI's own API — no separate SDK is needed, and the API key is a non-empty placeholder since Ollama doesn't validate it.
-- `TextGenOpenAI.cs`, `TextGenClaude.cs`, and `TextGenOllama.cs` (in `Week1/Day1/`) are the original, single-provider versions written before the Strategy pattern refactor. They're kept intentionally as a **before/after reference** — showing the direct, hardcoded provider call versus the abstracted, swappable version in `StrategyPattern/`. `Program.cs` has the calls to these earlier versions commented out, with the Strategy pattern version active by default.
-- The Day 2 (meeting notes) exercise reuses the Day 1 classes/interfaces rather than duplicating them into a `Week1/Day2/` folder. They were originally named around "subject line" (from the Day 1 exercise) but have been renamed to the generic `TextGen*`/`*TextGenerationStrategy` naming above, since the same provider-abstraction code now backs a different kind of output (a structured summary instead of a one-line subject).
+| Week 1, Day 1 | Meeting Notes Summarizer | Turns raw, informal meeting notes into a structured markdown summary (Key Decisions / Action Items / Open Questions). Implemented for OpenAI and Claude using the **Strategy pattern**, letting the user pick a provider at runtime. | ✅ |
+| Week 1, Day 2 | Meeting Notes Summarizer + Ollama provider | Same summarizer as Day 1, with **Ollama** added as a third interchangeable provider alongside OpenAI and Claude. | ✅ |
 
 ## Related
 
