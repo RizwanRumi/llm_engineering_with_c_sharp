@@ -3,11 +3,11 @@ using Anthropic.Models.Messages;
 
 namespace LLMConsoleApp.Week1.Day1.StrategyPattern
 {
-    public class ClaudeSubjectLineStrategy : ISubjectLineStrategy
+    public class ClaudeTextGenerationStrategy : ITextGenerationStrategy
     {
         private readonly AnthropicClient _client;
-        
-        public ClaudeSubjectLineStrategy()
+
+        public ClaudeTextGenerationStrategy()
         {
             _client = new AnthropicClient(); // reads ANTHROPIC_API_KEY automatically
         }

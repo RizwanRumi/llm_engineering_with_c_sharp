@@ -16,7 +16,8 @@ The original course is built around Python and the OpenAI API. This repo exists 
 - **.NET 8+**
 - [`OpenAI`](https://www.nuget.org/packages/OpenAI) — official OpenAI .NET SDK
 - [`Anthropic`](https://www.nuget.org/packages/Anthropic) — official Anthropic .NET SDK (currently in beta)
-- Environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`) for API key management
+- [Ollama](https://ollama.com) — runs local open-weight models (e.g. `llama3.2`) behind Ollama's OpenAI-compatible endpoint, reusing the `OpenAI` SDK with a `localhost` base URL
+- Environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`) for API key management; Ollama needs no real key since it runs locally
 
 ## Getting started
 
@@ -24,6 +25,10 @@ The original course is built around Python and the OpenAI API. This repo exists 
 - Visual Studio 2022 (or any .NET 8+ compatible IDE)
 - An OpenAI API key ([platform.openai.com](https://platform.openai.com))
 - An Anthropic API key ([console.anthropic.com](https://console.anthropic.com))
+- [Ollama](https://ollama.com) installed locally with a model pulled, e.g.:
+  ```bash
+  ollama pull llama3.2
+  ```
 
 ### Setup
 
@@ -38,6 +43,8 @@ The original course is built around Python and the OpenAI API. This repo exists 
    setx ANTHROPIC_API_KEY "your_anthropic_key_here"
    ```
    > Restart Visual Studio after running `setx` — environment variables set this way only apply to new processes.
+   >
+   > Ollama doesn't check the API key, so no `ANTHROPIC`/`OPENAI`-style setup is needed for it — just have `ollama serve` running with a model pulled.
 
 3. Open the solution in Visual Studio 2022 and restore NuGet packages.
 
@@ -47,7 +54,8 @@ The original course is built around Python and the OpenAI API. This repo exists 
 
 | Week | Exercise | Description | Status |
 |---|---|---|---|
-| Week 1 | Email Subject Line Generator | Given an email body, suggests a short, professional subject line. Implemented for both OpenAI and Claude using the **Strategy pattern**, letting the user pick a provider at runtime. | ✅ |
+| Week 1, Day 1 | Email Subject Line Generator | Given an email body, suggests a short, professional subject line. Implemented for OpenAI and Claude using the **Strategy pattern**, letting the user pick a provider at runtime. | ✅ |
+| Week 1, Day 2 | Meeting Notes Summarizer + Ollama provider | Reuses the Day 1 classes/interfaces (renamed to the generic `TextGen*`/`*TextGenerationStrategy`) to turn raw, informal meeting notes into a structured markdown summary (Key Decisions / Action Items / Open Questions), and adds **Ollama** as a third interchangeable provider alongside OpenAI and Claude. `Program.cs` currently runs this version. | ✅ |
 
 ## Project structure
 
@@ -55,28 +63,32 @@ The original course is built around Python and the OpenAI API. This repo exists 
 LLMConsoleApp/
 └── Week1/
     └── Day1/
-        ├── SubjectGenOpenAI.cs         # earlier, single-provider reference version
-        ├── SubjectGenClaude.cs         # earlier, single-provider reference version
+        ├── TextGenOpenAI.cs            # single-provider reference version (OpenAI)
+        ├── TextGenClaude.cs            # single-provider reference version (Claude)
+        ├── TextGenOllama.cs            # single-provider reference version (Ollama)
         └── StrategyPattern/
-            ├── ISubjectLineStrategy.cs
-            ├── OpenAiSubjectLineStrategy.cs
-            ├── ClaudeSubjectLineStrategy.cs
-            └── SubjectLineGenerator.cs
+            ├── ITextGenerationStrategy.cs
+            ├── OpenAiTextGenerationStrategy.cs
+            ├── ClaudeTextGenerationStrategy.cs
+            ├── OllamaTextGenerationStrategy.cs
+            └── TextGenerator.cs
 Program.cs
 ```
 
 ## Design notes
 
-- **Strategy pattern** is used to abstract away provider-specific API differences (OpenAI's `ChatClient` vs. Anthropic's `AnthropicClient`) behind a common interface, so calling code stays provider-agnostic and new providers can be added without touching existing code.
+- **Strategy pattern** is used to abstract away provider-specific API differences (OpenAI's `ChatClient`, Anthropic's `AnthropicClient`, and Ollama via its OpenAI-compatible endpoint) behind a common interface, so calling code stays provider-agnostic and new providers can be added without touching existing code.
 - Each exercise typically has:
-  - An interface (e.g. `ISubjectLineStrategy`)
-  - One concrete strategy class per provider (e.g. `OpenAiSubjectLineStrategy`, `ClaudeSubjectLineStrategy`)
+  - An interface (e.g. `ITextGenerationStrategy`)
+  - One concrete strategy class per provider (e.g. `OpenAiTextGenerationStrategy`, `ClaudeTextGenerationStrategy`, `OllamaTextGenerationStrategy`)
   - A small context class that wraps the chosen strategy
-- `SubjectGenOpenAI.cs` and `SubjectGenClaude.cs` (in `Week1/Day1/`) are the original, single-provider versions written before the Strategy pattern refactor. They're kept intentionally as a **before/after reference** — showing the direct, hardcoded provider call versus the abstracted, swappable version in `StrategyPattern/`. `Program.cs` has the calls to these earlier versions commented out, with the Strategy pattern version active by default.
+- **Ollama** is added as a provider by pointing the `OpenAI` SDK's `ChatClient` at Ollama's local, OpenAI-compatible endpoint (`http://localhost:11434/v1`) instead of OpenAI's own API — no separate SDK is needed, and the API key is a non-empty placeholder since Ollama doesn't validate it.
+- `TextGenOpenAI.cs`, `TextGenClaude.cs`, and `TextGenOllama.cs` (in `Week1/Day1/`) are the original, single-provider versions written before the Strategy pattern refactor. They're kept intentionally as a **before/after reference** — showing the direct, hardcoded provider call versus the abstracted, swappable version in `StrategyPattern/`. `Program.cs` has the calls to these earlier versions commented out, with the Strategy pattern version active by default.
+- The Day 2 (meeting notes) exercise reuses the Day 1 classes/interfaces rather than duplicating them into a `Week1/Day2/` folder. They were originally named around "subject line" (from the Day 1 exercise) but have been renamed to the generic `TextGen*`/`*TextGenerationStrategy` naming above, since the same provider-abstraction code now backs a different kind of output (a structured summary instead of a one-line subject).
 
 ## Related
 
-- Python version of the course exercises: [community-contributions/rizwan_rumi](https://github.com/ed-donner/llm_engineering/tree/main/community-contributions) (PR-based contributions to the original course repo)
+- Python version of the course exercises: [week1/community-contributions/rizwan_rumi](https://github.com/ed-donner/llm_engineering/tree/main/week1/community-contributions/rizwan_rumi) (PR-based contributions to the original course repo, organized per week)
 - Original course repo: [ed-donner/llm_engineering](https://github.com/ed-donner/llm_engineering)
 
 ## License

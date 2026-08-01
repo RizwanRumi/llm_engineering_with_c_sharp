@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LLMConsoleApp.Week1.Day1
 {
-    public static class SubjectGenOllamaAI
+    public static class TextGenOllama
     {
         public static string Run(string userPrompt, string systemPrompt, string apiKey)
         {
@@ -26,12 +26,7 @@ namespace LLMConsoleApp.Week1.Day1
 
             ChatCompletion completion = client.CompleteChat(messages);
 
-            return CleanSubjectLine(completion.Content[0].Text);
-        }
-
-        private static string CleanSubjectLine(string raw)
-        {
-            return raw.Trim().Trim('"').Replace("Subject:", "").Trim();
+            return completion.Content[0].Text;
         }
     }
 }

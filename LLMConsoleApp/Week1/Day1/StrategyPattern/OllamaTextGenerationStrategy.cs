@@ -6,11 +6,11 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace LLMConsoleApp.Week1.Day1.StrategyPattern
 {
-    public class OllamaSubjectLineStrategy : ISubjectLineStrategy
+    public class OllamaTextGenerationStrategy : ITextGenerationStrategy
     {
         private readonly ChatClient _client;
 
-        public OllamaSubjectLineStrategy(string apikey)
+        public OllamaTextGenerationStrategy(string apikey)
         {
             var options = new OpenAIClientOptions
             {

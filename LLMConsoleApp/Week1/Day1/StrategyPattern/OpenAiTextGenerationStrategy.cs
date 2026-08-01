@@ -2,11 +2,11 @@
 
 namespace LLMConsoleApp.Week1.Day1.StrategyPattern
 {
-    public class OpenAiSubjectLineStrategy : ISubjectLineStrategy
+    public class OpenAiTextGenerationStrategy : ITextGenerationStrategy
     {
         private readonly ChatClient _client;
-       
-        public OpenAiSubjectLineStrategy(string apiKey, string model = "gpt-5.1")
+
+        public OpenAiTextGenerationStrategy(string apiKey, string model = "gpt-5.1")
         {
             _client = new ChatClient(model: model, apiKey: apiKey);
         }

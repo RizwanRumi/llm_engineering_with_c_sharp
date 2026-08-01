@@ -2,7 +2,7 @@
 
 namespace LLMConsoleApp.Week1.Day1
 {
-    public static class SubjectGenOpenAI
+    public static class TextGenOpenAI
     {
         public static string Run(string apiKey, string userPrompt, string systemPrompt)
         {

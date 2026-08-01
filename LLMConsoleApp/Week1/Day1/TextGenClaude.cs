@@ -3,7 +3,7 @@ using Anthropic.Models.Messages;
 
 namespace LLMConsoleApp.Week1.Day1
 {
-    public static class SubjectGenClaude
+    public static class TextGenClaude
     {
         public static async Task<string> RunAsync(string userPrompt, string systemPrompt)
         {

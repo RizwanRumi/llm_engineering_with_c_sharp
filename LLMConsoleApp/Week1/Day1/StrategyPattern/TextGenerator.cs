@@ -1,11 +1,11 @@
 ﻿namespace LLMConsoleApp.Week1.Day1.StrategyPattern
 {
-    // Context class for the Strategy pattern, which uses an ISubjectLineStrategy to generate subject lines.
-    public class SubjectLineGenerator
+    // Context class for the Strategy pattern, which uses an ITextGenerationStrategy to generate text.
+    public class TextGenerator
     {
-        private readonly ISubjectLineStrategy _strategy;
+        private readonly ITextGenerationStrategy _strategy;
 
-        public SubjectLineGenerator(ISubjectLineStrategy strategy)
+        public TextGenerator(ITextGenerationStrategy strategy)
         {
             _strategy = strategy;
         }
