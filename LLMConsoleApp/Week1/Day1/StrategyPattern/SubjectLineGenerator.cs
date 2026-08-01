@@ -10,6 +10,7 @@
             _strategy = strategy;
         }
 
-        public Task<string> Generate(string emailText) => _strategy.GenerateAsync(emailText);
+        public Task<string> Generate(string meetingNotes, string systemNotes)
+            => _strategy.GenerateAsync(meetingNotes, systemNotes);
     }
 }

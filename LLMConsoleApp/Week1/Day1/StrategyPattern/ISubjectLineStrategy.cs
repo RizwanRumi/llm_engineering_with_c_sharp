@@ -2,6 +2,6 @@
 {
     public interface ISubjectLineStrategy
     {
-        Task<string> GenerateAsync(string emailText);
+        Task<string> GenerateAsync(string meetingNotes, string systemNotes);
     }
 }

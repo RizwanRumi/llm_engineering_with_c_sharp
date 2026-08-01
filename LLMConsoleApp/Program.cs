@@ -44,50 +44,52 @@ namespace LLMConsoleApp
 
             //// single provider exercise
 
-            Console.WriteLine("--- OpenAI ---");
-            string summaryOpenAI = SubjectGenOpenAI.Run(openAiKey, meetingNotes, systemPrompt);
-            Console.WriteLine(summaryOpenAI);
+            //Console.WriteLine("--- OpenAI ---");
+            //string summaryOpenAI = SubjectGenOpenAI.Run(openAiKey, meetingNotes, systemPrompt);
+            //Console.WriteLine(summaryOpenAI);
 
-            Console.WriteLine("\n--- Claude ---");
-            string summaryClaude = await SubjectGenClaude.RunAsync(meetingNotes, systemPrompt);
-            Console.WriteLine(summaryClaude);
+            //Console.WriteLine("\n--- Claude ---");
+            //string summaryClaude = await SubjectGenClaude.RunAsync(meetingNotes, systemPrompt);
+            //Console.WriteLine(summaryClaude);
 
-            Console.WriteLine("\n--- Ollama ---");
-            string summaryOllama = SubjectGenOllamaAI.Run(meetingNotes, systemPrompt, ollamaKey);
-            Console.WriteLine(summaryOllama);
+            //Console.WriteLine("\n--- Ollama ---");
+            //string summaryOllama = SubjectGenOllamaAI.Run(meetingNotes, systemPrompt, ollamaKey);
+            //Console.WriteLine(summaryOllama);
 
             // Strategy Pattern exercise
 
-            //Console.WriteLine("Select a provider:");
-            //Console.WriteLine("  1. OpenAI");
-            //Console.WriteLine("  2. Anthropic (Claude)");
-            //Console.Write("Enter choice (1 or 2): ");
+            Console.WriteLine("Select a provider:");
+            Console.WriteLine("  1. OpenAI");
+            Console.WriteLine("  2. Anthropic (Claude)");
+            Console.WriteLine("  3. Ollama");
+            Console.Write("Enter a specific choice: ");
 
-            //string? choice = Console.ReadLine();
+            string? choice = Console.ReadLine();
 
-            //ISubjectLineStrategy? strategy = null;
+            ISubjectLineStrategy? strategy = null;
 
-            //while (strategy is null)
-            //{                
-            //    strategy = choice switch
-            //    {
-            //        "1" => new OpenAiSubjectLineStrategy(openAiKey),
-            //        "2" => new ClaudeSubjectLineStrategy(),
-            //        _ => null
-            //    };
+            while (strategy is null)
+            {
+                strategy = choice switch
+                {
+                    "1" => new OpenAiSubjectLineStrategy(openAiKey),
+                    "2" => new ClaudeSubjectLineStrategy(),
+                    "3" => new OllamaSubjectLineStrategy(ollamaKey),
+                    _ => null
+                };
 
-            //    if (strategy is null)
-            //    {
-            //        Console.WriteLine("Invalid choice, please enter 1 or 2.");
-            //        Console.Write("Enter choice (1 or 2): ");
-            //        choice = Console.ReadLine();
-            //    }
-            //}
+                if (strategy is null)
+                {
+                    Console.WriteLine("Invalid choice, please enter an option.");
+                    Console.Write("Enter a specific choice: ");
+                    choice = Console.ReadLine();
+                }
+            }
 
-            //var generator = new SubjectLineGenerator(strategy);
-            //string subjectLine = await generator.Generate(emailText);
+            var generator = new SubjectLineGenerator(strategy);
+            string summary = await generator.Generate(meetingNotes, systemPrompt);
 
-            //Console.WriteLine($"\nSuggested subject line:\n{subjectLine}");
+            Console.WriteLine($"\nSummary :\n{summary}");
         }
     }
 }

@@ -6,25 +6,22 @@ namespace LLMConsoleApp.Week1.Day1.StrategyPattern
     public class ClaudeSubjectLineStrategy : ISubjectLineStrategy
     {
         private readonly AnthropicClient _client;
-        private const string SystemPrompt =
-            "You are an assistant that reads the contents of an email and suggests a short, " +
-            "clear, professional subject line for it. Respond with only the subject line, nothing else.";
-
+        
         public ClaudeSubjectLineStrategy()
         {
             _client = new AnthropicClient(); // reads ANTHROPIC_API_KEY automatically
         }
 
-        public async Task<string> GenerateAsync(string emailText)
+        public async Task<string> GenerateAsync(string userPrompt, string systemPrompt)
         {
             var message = await _client.Messages.Create(new MessageCreateParams
             {
                 Model = Model.ClaudeSonnet5,
                 MaxTokens = 1000,
-                System = SystemPrompt,
+                System = systemPrompt,
                 Messages =
                 [
-                    new() { Role = Role.User, Content = emailText }
+                    new() { Role = Role.User, Content = userPrompt }
                 ],
             });
 
