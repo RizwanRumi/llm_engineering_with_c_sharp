@@ -1,6 +1,5 @@
 ﻿using LLMConsoleApp.Interfaces;
 using LLMConsoleApp.Week1.Day1;
-using LLMConsoleApp.Week1.Day1.StrategyPattern;
 
 namespace LLMConsoleApp
 {    
